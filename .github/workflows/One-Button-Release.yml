@@ -5,7 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Leave empty to bump minor or override
+        description: |
+          Leave field empty for minor version bump.
+          Optionally override using semver syntax (1.0.0).
         required: false
 
 jobs:
