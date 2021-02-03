@@ -1,5 +1,6 @@
 name: One Button Release
 
+# Manual workflow
 on:
   workflow_dispatch:
     inputs:
