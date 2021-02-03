@@ -1,12 +1,15 @@
-name: Publish Package
+name: One Button Release
 
 on:
-  release:
-    types: [released]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Leave empty to bump minor or override
+        required: false
 
 jobs:
-  publish_package:
-    name: Publish Package
+  bump-version:
+    name: Bump Package Version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -53,20 +56,26 @@ jobs:
 
       # If the version is 0.1.0-alpha.0, this will set the version to 0.1.0
       - name: Promote package version to release
+        if: ${{ !github.event.inputs.version }}
         run: |
           poetry version patch
 
-      - name: Build Python package and publish to PyPI
-        if: ${{ github.event.release.target_commitish == 'master' }}
+      - name: Override package version from GitHub Action variable
+        if: ${{ github.event.inputs.version }}
         run: |
-          poetry publish --build --username __token__ --password ${{ secrets.PYPI_TOKEN}}
+          poetry version ${{ github.event.inputs.version }}
+
+      # - name: Build Python package and publish to PyPI
+      #   if: ${{ github.event.release.target_commitish == 'main' }}
+      #   run: |
+      #     poetry publish --build --username __token__ --password ${{ secrets.PYPI_TOKEN}}
 
       - name: Bump poetry version to next alpha version
         run: |
           poetry version prepatch
 
       - name: Commit files
-        if: ${{ github.event.release.target_commitish == 'master' }}
+        if: ${{ github.event.release.target_commitish == 'main' }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -74,7 +83,7 @@ jobs:
           git commit -m "Bump package version" -a
 
       - name: Push changes
-        if: ${{ github.event.release.target_commitish == 'master' }}
+        if: ${{ github.event.release.target_commitish == 'main' }}
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.ADMIN_PAT }}
