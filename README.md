@@ -6,6 +6,8 @@
 
 <!-- @TODO: We should show you some stinkin' badges -->
 
+![One Button Release](https://github.com/rick-morrow/python-styleguide/workflows/One%20Button%20Release/badge.svg?branch=users%2Frick-morrow%2Fone-button-release&event=workflow_dispatch)
+
 Welcome to NI's internal and external Python conventions and enforcement tooling.
 
 ## Written Conventions
